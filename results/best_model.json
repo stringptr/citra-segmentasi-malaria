@@ -1,0 +1,36 @@
+{
+  "selected_channel_for_threshold": "L",
+  "best_variant": "B3_glcm",
+  "best_cfg": {
+    "variant": "glcm",
+    "use_glcm": true,
+    "use_lbp": false
+  },
+  "best_params": {
+    "t_L": 0.5,
+    "t_P": 0.7,
+    "t_S": 0.9,
+    "t_T": 0.65,
+    "t_core": 0.08,
+    "use_texture": true
+  },
+  "object_rules": {
+    "area_min": 2301.25,
+    "area_max": 38866.0,
+    "L_max": 193.50377456722634,
+    "P_min": 33.92080307006836,
+    "S_min": 61.76828075953276,
+    "solidity_min": 0.6879632655729132,
+    "entropy_min": 5.521307909422684,
+    "lbp_entropy_min": 1.9864117622375488,
+    "reject_border": true
+  },
+  "base_params": {
+    "t_L": 0.5,
+    "t_P": 0.95,
+    "t_S": 0.9,
+    "t_T": null,
+    "t_core": 0.08,
+    "use_texture": false
+  }
+}

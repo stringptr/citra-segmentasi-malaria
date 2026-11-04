@@ -1,0 +1,9 @@
+image_id,species,split,n_objects,areas,total_area
+1305121398-0012-S.jpg,falciparum,train,1,[6575],6575
+1305121398-0021-S.jpg,falciparum,train,1,[12820],12820
+1305121398-0010-S.jpg,falciparum,test,1,[8910],8910
+1305121398-0022-S.jpg,falciparum,test,1,[9940],9940
+1709041080-0037-S.jpg,vivax,train,1,[15366],15366
+1703121298-0002-S.jpg,vivax,train,1,[19433],19433
+1709041080-0038-S.jpg,vivax,test,1,[12772],12772
+1709041080-0030-S.jpg,vivax,test,1,[19371],19371
