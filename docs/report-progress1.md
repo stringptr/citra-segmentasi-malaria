@@ -50,7 +50,7 @@ Disusun oleh:
 1. Segmentasi yang dilakukan bersifat biner (parasit dan bukan parasit).  
 2. Tidak ada pelatihan model, sehingga seluruh metode berupa pengolahan citra klasik.  
 3. Penelitian tidak mencakup klasifikasi spesies.  
-4. Data dibatasi pada citra P. falciparum dari MP-IDB, dengan subset 20 citra yang dipilih secara acak dengan seed tetap, terdiri atas 10 citra untuk tuning parameter dan 10 citra untuk pengujian.
+4. Data dibatasi pada citra P. falciparum dan P. vivax dari MP-IDB, dengan subset stratified 32 citra (16 tuning dan 16 uji) yang dipilih dengan seed tetap: 2 citra per spesies per stadium pada tiap split, mencakup stadium ring, trophozoite, schizont, dan gametocyte.
 
    
 
@@ -90,14 +90,14 @@ Disusun oleh:
 
 | Aspek | Keterangan |
 | ----- | ----- |
-| Akuisisi citra | Mikroskop Leica DM2000, perbesaran 100×, format PNG, resolusi 2592 × 1944 piksel, 24-bit |
+| Akuisisi citra | Mikroskop Leica DM2000, perbesaran 100×, resolusi 2592 × 1944 piksel, 24-bit; pada salinan Dataset Ninja berkas disimpan sebagai JPG (dataset asli PNG) |
 | Ground truth | Mask tingkat piksel hanya untuk parasit; sel darah merah tidak dianotasi |
 | Kelas | P. falciparum, P. vivax, P. malariae, P. ovale; terdapat pula pembagian tahap ring, trophozoite, schizont, gametocyte |
 | Jumlah data | Menurut Dataset Ninja: 210 citra dengan 1.407 objek terlabel (103 P. falciparum, 40 P. vivax, 37 P. malariae, 29 P. ovale) |
 | Ukuran objek | Rata-rata luas parasit P. falciparum sekitar 0,06% dari luas citra |
 | Sumber unduhan | datasetninja.com/mp-idb (sekitar 697 MB) dan github.com/andrealoddo/MP-IDB |
 
-   ## Catatan: penulis dataset melaporkan 229 citra dengan 840 kandidat parasit, sedangkan Dataset Ninja melaporkan 210 citra dengan 1.407 objek. Perbedaan angka ini perlu diverifikasi pada repositori asli sebelum angka dicantumkan pada laporan akhir, demikian pula rincian jumlah citra per spesies dan format anotasi.
+   ## Catatan: penulis dataset melaporkan 229 citra dengan 840 kandidat parasit, sedangkan Dataset Ninja melaporkan 210 citra dengan 1.407 objek. Pemeriksaan langsung pada salinan Dataset Ninja menunjukkan 210 berkas anotasi dengan jumlah citra per spesies 103 P. falciparum, 40 P. vivax, 37 P. malariae, dan 29 P. ovale; total objek 1.407 (1.267 di antaranya P. falciparum). Berkas citra berupa JPG dan anotasi berupa bitmap 1-bit terkompresi di dalam JSON.
 
    
 
@@ -163,13 +163,15 @@ Disusun oleh:
 
 2. ## **Data dan Subset**
 
-1. ## Data yang digunakan adalah citra P. falciparum dari MP-IDB (103 citra, rata-rata sekitar 12 parasit per citra).
+1. ## Data yang digunakan adalah citra P. falciparum (103 citra) dan P. vivax (40 citra) dari MP-IDB, mencakup stadium ring, trophozoite, schizont, dan gametocyte.
 
-2. ## Diambil 20 citra secara acak dengan seed tetap agar subset dapat direproduksi.
+2. ## Subset dipilih secara **stratified**: 2 citra per (spesies, stadium) untuk tuning dan 2 citra per (spesies, stadium) untuk pengujian, dengan seed tetap. Totalnya **16 citra tuning dan 16 citra uji (32 citra)**, sehingga tiap sel (spesies, stadium) diwakili 2 citra pada tiap split.
 
-3. ## Citra diperkecil sekitar 50% agar proses cepat. Interpolasi biasa digunakan untuk citra, sedangkan nearest neighbor digunakan untuk mask agar mask tetap biner.
+3. ## Sebagian citra memiliki lebih dari satu tag stadium. Agar setiap citra menempati tepat satu sel, stadium diisi dari yang kandidatnya paling sedikit (gametocyte, trophozoite, schizont, ring); pada tiap stadium dipilih citra yang paling eksklusif. Aturan ini deterministik dan didokumentasikan agar dapat direproduksi.
 
-4. ## Subset dibagi menjadi 10 citra untuk tuning parameter (ambang dan ukuran kernel) dan 10 citra untuk pengujian. Data uji tidak disentuh saat memilih parameter sehingga parameter tidak menyesuaikan diri terhadap data uji.
+4. ## Citra diperkecil sekitar 50% agar proses cepat. Interpolasi biasa digunakan untuk citra, sedangkan nearest neighbor digunakan untuk mask agar mask tetap biner.
+
+5. ## Data uji tidak disentuh saat memilih parameter sehingga parameter tidak menyesuaikan diri terhadap data uji. Karena tiap sel (spesies, stadium) hanya diwakili 2 citra uji, metrik per stadium dilaporkan sebagai indikasi eksploratif, bukan klaim generalisasi.
 
 3. ## **Tingkat Pengerjaan**
 
@@ -198,9 +200,9 @@ Disusun oleh:
 
 5. ## **Rancangan Eksperimen**
 
-1. ## Eksperimen A    Perbandingan metode segmentasi. Dengan preprocessing minimal yang sama (kanal terpilih dan median filter), dibandingkan Otsu multi-level, adaptive thresholding, dan k-means. Seluruhnya dievaluasi dengan prosedur yang sama.
+1. ## Eksperimen A    Perbandingan metode segmentasi. Dengan preprocessing minimal yang sama (kanal terpilih dan median filter), dibandingkan Otsu multi-level, adaptive thresholding, dan k-means, ditambah **pixel-if-else sebagai metode tambahan**. Seluruhnya dievaluasi dengan prosedur yang sama pada 16 citra uji.
 
-2. ## Eksperimen B    Pengaruh preprocessing. Satu metode segmentasi dipilih sebagai baseline (misalnya Otsu multi-level), lalu preprocessing divariasikan dengan menambahkan satu per satu: tanpa tambahan, median filter, CLAHE, koreksi background, ekstraksi fitur, dan kombinasi terbaik. Untuk koreksi background, opening diuji sebagai kontrol negatif guna membuktikan bahwa closing merupakan pilihan yang tepat.
+2. ## Eksperimen B    Pengaruh preprocessing. Karena setiap metode harus dibandingkan dengan seluruh faktor lain tetap, Eksperimen B dijalankan sebagai **faktorial penuh**: setiap metode mempertahankan formulasi Eksperimen A sebagai baseline, parameter metode ditahan pada nilai Eksperimen A, dan hanya preprocessing yang divariasikan satu tahap dalam satu waktu (tanpa tambahan, median filter, Gaussian, CLAHE, koreksi background dengan closing, opening sebagai kontrol negatif, kombinasi, serta fitur tekstur untuk metode berbasis fitur). Pemilihan varian terbaik per metode memakai mean Dice pada data tuning saja.
 
 3. ## Eksperimen C    Pengaruh morfologi pasca-segmentasi. Mask dibandingkan sebelum dan sesudah opening atau closing serta filter luas, dengan tiga ambang luas (kecil, sedang, besar). Diamati perubahan Dice, IoU, jumlah komponen, dan apakah parasit asli ikut terhapus (ditandai penurunan recall).
 
@@ -223,7 +225,7 @@ Disusun oleh:
 | Parasit kecil terhapus oleh filter luas | Uji beberapa ambang luas dan pantau recall, bukan hanya Dice |
 | Format anotasi berbeda dari dugaan | Tulis fungsi pemuat dan uji pada satu citra di hari pertama |
 | Preprocessing tidak menaikkan metrik | Hasil tetap valid; bahas penyebabnya dan laporkan sebagai temuan |
-| Parameter terlalu disesuaikan dengan data uji | Tetapkan parameter pada 10 citra tuning, lalu uji pada citra lainnya |
+| Parameter terlalu disesuaikan dengan data uji | Tetapkan parameter pada 16 citra tuning, lalu uji pada 16 citra lainnya |
 
    ## 
 

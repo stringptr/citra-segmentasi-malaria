@@ -1,0 +1,9 @@
+species,stage,Adaptive threshold,Otsu multilevel 3,Pixel if-else (tambahan),k-means k=3
+falciparum,gametocyte,0.2373,0.3893,0.007,0.0246
+falciparum,ring,0.1067,0.0732,0.0101,0.0322
+falciparum,schizont,0.2027,0.0213,0.0406,0.0108
+falciparum,trophozoite,0.0597,0.0156,0.0137,0.0135
+vivax,gametocyte,0.2384,0.0734,0.602,0.0421
+vivax,ring,0.112,0.0252,0.145,0.0179
+vivax,schizont,0.1794,0.062,0.5498,0.0386
+vivax,trophozoite,0.183,0.0193,0.2306,0.0216

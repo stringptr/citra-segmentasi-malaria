@@ -50,58 +50,58 @@
   },
   "ifelse_params": {
     "B0_none": {
-      "t_L": 0.2,
+      "t_L": 0.6,
       "t_P": 0.95,
-      "t_S": 0.4,
+      "t_S": 0.8,
       "t_T": null,
       "use_texture": false
     },
     "B1_median": {
-      "t_L": 0.2,
+      "t_L": 0.6,
       "t_P": 0.95,
-      "t_S": 0.4,
+      "t_S": 0.8,
       "t_T": null,
       "use_texture": false
     },
     "B2_gaussian": {
-      "t_L": 0.2,
+      "t_L": 0.6,
       "t_P": 0.95,
-      "t_S": 0.4,
+      "t_S": 0.8,
       "t_T": null,
       "use_texture": false
     },
     "B3_clahe": {
-      "t_L": 0.2,
+      "t_L": 0.6,
       "t_P": 0.95,
-      "t_S": 0.4,
+      "t_S": 0.8,
       "t_T": null,
       "use_texture": false
     },
     "B4_bg_closing": {
-      "t_L": 0.2,
+      "t_L": 0.6,
       "t_P": 0.95,
-      "t_S": 0.4,
+      "t_S": 0.8,
       "t_T": null,
       "use_texture": false
     },
     "B5_bg_opening": {
-      "t_L": 0.2,
+      "t_L": 0.6,
       "t_P": 0.95,
-      "t_S": 0.4,
+      "t_S": 0.8,
       "t_T": null,
       "use_texture": false
     },
     "B6_combo": {
-      "t_L": 0.2,
+      "t_L": 0.6,
       "t_P": 0.95,
-      "t_S": 0.4,
+      "t_S": 0.8,
       "t_T": null,
       "use_texture": false
     },
     "B7_texture": {
-      "t_L": 0.2,
+      "t_L": 0.6,
       "t_P": 0.95,
-      "t_S": 0.4,
+      "t_S": 0.8,
       "t_T": 0.5,
       "use_texture": true
     }

@@ -1,0 +1,26 @@
+{
+  "seed": 42,
+  "scale": 0.5,
+  "min_area": 12,
+  "object_iou_threshold": 0.1,
+  "selected_channel": "b",
+  "channel_polarity": {
+    "gray": "dark",
+    "green": "dark",
+    "L": "dark",
+    "a": "bright",
+    "b": "dark",
+    "S": "bright",
+    "P": "bright"
+  },
+  "adaptive_block": 25,
+  "adaptive_C": 5,
+  "pixel_if_else_params": {
+    "t_L": 0.2,
+    "t_P": 0.95,
+    "t_S": 0.4,
+    "use_texture": false,
+    "t_core": 0.08
+  },
+  "pixel_if_else_weighted_train_dice": 0.10579538743204608
+}

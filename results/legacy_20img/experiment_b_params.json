@@ -1,0 +1,115 @@
+{
+  "seed": 42,
+  "scale": 0.5,
+  "min_area": 12,
+  "object_iou_threshold": 0.1,
+  "selected_channel": "b",
+  "polarity": "dark",
+  "block_texture": 16,
+  "levels_glcm": 16,
+  "local_ksize": 16,
+  "variants": [
+    "B0_none",
+    "B1_median",
+    "B2_gaussian",
+    "B3_clahe",
+    "B4_bg_closing",
+    "B5_bg_opening",
+    "B6_combo",
+    "B7_texture"
+  ],
+  "adaptive_params": {
+    "B0_none": {
+      "block": 25,
+      "C": 5
+    },
+    "B1_median": {
+      "block": 25,
+      "C": 5
+    },
+    "B2_gaussian": {
+      "block": 25,
+      "C": 5
+    },
+    "B3_clahe": {
+      "block": 25,
+      "C": 5
+    },
+    "B4_bg_closing": {
+      "block": 25,
+      "C": 5
+    },
+    "B5_bg_opening": {
+      "block": 25,
+      "C": 5
+    },
+    "B6_combo": {
+      "block": 25,
+      "C": 5
+    }
+  },
+  "ifelse_params": {
+    "B0_none": {
+      "t_L": 0.2,
+      "t_P": 0.95,
+      "t_S": 0.4,
+      "t_T": null,
+      "use_texture": false
+    },
+    "B1_median": {
+      "t_L": 0.2,
+      "t_P": 0.95,
+      "t_S": 0.4,
+      "t_T": null,
+      "use_texture": false
+    },
+    "B2_gaussian": {
+      "t_L": 0.2,
+      "t_P": 0.95,
+      "t_S": 0.4,
+      "t_T": null,
+      "use_texture": false
+    },
+    "B3_clahe": {
+      "t_L": 0.2,
+      "t_P": 0.95,
+      "t_S": 0.4,
+      "t_T": null,
+      "use_texture": false
+    },
+    "B4_bg_closing": {
+      "t_L": 0.2,
+      "t_P": 0.95,
+      "t_S": 0.4,
+      "t_T": null,
+      "use_texture": false
+    },
+    "B5_bg_opening": {
+      "t_L": 0.2,
+      "t_P": 0.95,
+      "t_S": 0.4,
+      "t_T": null,
+      "use_texture": false
+    },
+    "B6_combo": {
+      "t_L": 0.2,
+      "t_P": 0.95,
+      "t_S": 0.4,
+      "t_T": null,
+      "use_texture": false
+    },
+    "B7_texture": {
+      "t_L": 0.2,
+      "t_P": 0.95,
+      "t_S": 0.4,
+      "t_T": 0.5,
+      "use_texture": true
+    }
+  },
+  "best_variant_per_method": {
+    "Adaptive threshold": "B2_gaussian",
+    "Otsu multilevel 3": "B4_bg_closing",
+    "Pixel if-else (tambahan)": "B0_none",
+    "k-means k=3": "B5_bg_opening"
+  }
+}

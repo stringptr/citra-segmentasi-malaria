@@ -1,0 +1,56 @@
+{
+  "seed": 42,
+  "scale": 0.5,
+  "selected_channel": "b",
+  "base_methods": [
+    "Adaptive threshold",
+    "Pixel if-else (tambahan)"
+  ],
+  "variants": [
+    "C0_raw",
+    "C1_opening",
+    "C2_closing",
+    "C3_open_close",
+    "C4_area_min",
+    "C5_area_small",
+    "C6_area_medium",
+    "C7_area_large",
+    "C8_object_ifelse",
+    "C9_open_area_med"
+  ],
+  "area_thresholds_px": {
+    "min": 12,
+    "small": 64,
+    "medium": 110,
+    "large": 249
+  },
+  "area_threshold_percentiles": {
+    "small": 1,
+    "medium": 5,
+    "large": 10
+  },
+  "opening_closing_kernel": 3,
+  "object_ifelse_params": {
+    "Adaptive threshold": {
+      "min_area": 64,
+      "t_P": 0.5,
+      "t_S": 0.2
+    },
+    "Pixel if-else (tambahan)": {
+      "min_area": 64,
+      "t_P": 0.2,
+      "t_S": 0.2
+    }
+  },
+  "best_variant_per_base": {
+    "Adaptive threshold": "C5_area_small",
+    "Pixel if-else (tambahan)": "C7_area_large"
+  },
+  "pixel_if_else_params": {
+    "t_L": 0.6,
+    "t_P": 0.95,
+    "t_S": 0.8,
+    "use_texture": false,
+    "t_core": 0.08
+  }
+}
