@@ -1,4 +1,4 @@
-# Progress — Rombak Total: Notebook Preprocessing
+# Progress: Rombak Total Notebook Preprocessing
 
 Tanggal: 2026-11-15
 
@@ -86,7 +86,7 @@ Kesimpulan tidak berubah: Lab b saja terbaik; tahap tambahan menurunkan Dice.
 Boxplot per grup (spesies/stadium) tidak layak karena hanya 4 titik per grup; kotak dan whisker jadi artefak interpolasi, bukan distribusi nyata.
 
 ### Perbaikan
-1. Luas parasit per spesies/stadium: diganti dot/strip plot — tiap citra satu titik + garis rata-rata + label nilai (n=16 per spesies, n=8 per stadium).
+1. Luas parasit per spesies/stadium: diganti dot/strip plot, tiap citra satu titik + garis rata-rata + label nilai (n=16 per spesies, n=8 per stadium).
 2. Dice per pipeline: boxplot dipertahankan (n=32) tetapi ditimpa titik tiap citra, outlier box dimatikan.
 3. Baru: sebaran Dice per citra menurut spesies x stadium (n=4 per grup), ditampilkan sebagai titik + garis rata-rata.
 4. Notebook `malaria_parasite_preprocessing.ipynb` juga diubah: boxplot Dice + titik per citra.
@@ -108,11 +108,11 @@ Heatmap memperlihatkan Lab b konsisten tertinggi di semua stadium dan kedua spes
 ## 2026-11-16: Data dibaca per stadium dulu, gabungan 32 di akhir
 
 ### Perubahan struktur `malaria_data_preprocessing.ipynb` (28 cells, dieksekusi penuh, 16 gambar)
-1. **Bagian 2 — per stadium, dipisah.** Tiap stadium punya sel sendiri (`plot_stage(...)`): 4 crop *P. falciparum* di baris atas, 4 crop *P. vivax* di baris kedua, lalu histogram intensitas grayscale stadium itu (garis tipis = satu crop, area abu-abu = gabungan 4 crop, garis putus-putus = rata-rata intensitas).
-2. **Bagian 2.5 — ringkasan per stadium:** n, luas parasit, rata-rata dan std intensitas, persen piksel gelap per stadium x spesies (`results/data_preprocessing/ringkasan_per_stadium.csv`).
-3. **Bagian 3 — gabungan 32** seperti sebelumnya: grid 4x8 crop, dot plot luas parasit, histogram gabungan per spesies dan keseluruhan.
-4. **Bagian 5 — evaluasi per stadium:** Dice Otsu multilevel 3 dihitung per stadium (n=8), tabel `dice_per_stadium.csv`, plus histogram Dice per stadium dan histogram per spesies x stadium.
-5. **Bagian 6 — gabungan 32:** tabel ringkasan, boxplot, dot plot per kelompok, heatmap, histogram frekuensi (sama seperti versi sebelumnya).
+1. **Bagian 2, per stadium dipisah.** Tiap stadium punya sel sendiri (`plot_stage(...)`): 4 crop *P. falciparum* di baris atas, 4 crop *P. vivax* di baris kedua, lalu histogram intensitas grayscale stadium itu (garis tipis = satu crop, area abu-abu = gabungan 4 crop, garis putus-putus = rata-rata intensitas).
+2. **Bagian 2.5, ringkasan per stadium:** n, luas parasit, rata-rata dan std intensitas, persen piksel gelap per stadium x spesies (`results/data_preprocessing/ringkasan_per_stadium.csv`).
+3. **Bagian 3, gabungan 32** seperti sebelumnya: grid 4x8 crop, dot plot luas parasit, histogram gabungan per spesies dan keseluruhan.
+4. **Bagian 5, evaluasi per stadium:** Dice Otsu multilevel 3 dihitung per stadium (n=8), tabel `dice_per_stadium.csv`, plus histogram Dice per stadium dan histogram per spesies x stadium.
+5. **Bagian 6, gabungan 32:** tabel ringkasan, boxplot, dot plot per kelompok, heatmap, histogram frekuensi (sama seperti versi sebelumnya).
 6. **Bagian 4 (preprocessing):** demo tahapan tidak lagi 3 contoh; kini keempat stadium dipakai (ring, trophozoite, schizont, gametocyte, satu contoh *P. falciparum* masing-masing), jadi trophozoite ikut tampil walau stadium itu paling sulit disegmentasi.
 7. Jumlah gambar naik dari 10 menjadi 17.
 
@@ -134,3 +134,55 @@ Gabungan 32 citra tetap: P0 Lab b Dice 0.7029, IoU 0.5737.
 ### Catatan
 - `ringkasan_per_stadium.csv` dan `dice_per_stadium.csv` adalah file hasil baru di `results/data_preprocessing/`.
 - Ketidakkonsistenan label MP-IDB masih terlihat: crop ring falciparum nomor 1 dan 3 berasal dari citra sumber yang juga bertag schizont.
+
+## 2026-11-16 (kedua): Histogram dipisah + 5 metode segmentasi
+
+### Perubahan notebook `malaria_data_preprocessing.ipynb` (42 cells, 25 gambar)
+1. **Histogram per stadium dipisah** dari tampilan crop. Tiap stadium kini punya dua figure: `plot_stage(st)` (8 crop saja) dan `plot_stage_hist(st)` (histogram 13x4.4 inci, dua panel spesies, garis rata-rata dan median).
+2. **Bagian 5 baru: 5 metode segmentasi** pada kanal Lab b citra asli, semua dengan cleanup objek < 12 px:
+   - M1 pixel if-else (`kanal < 115`, ambang tetap)
+   - M2 Otsu satu ambang
+   - M3 Otsu multilevel 3 (metode yang dipakai di evaluasi preprocessing)
+   - M4 adaptive threshold (mean, blok 35, C=5)
+   - M5 k-means (3 klaster intensitas, klaster tergelap = parasit)
+3. Tabel Dice per metode x stadium, sapuan ambang tetap 95-140 (untuk membuktikan 115 pilihan terbaik), histogram Dice per metode x stadium, dan visual 28 panel (4 stadium x [Lab b, GT, 5 mask]).
+4. Tabel gabungan 32 citra kini punya precision dan recall per metode.
+5. Jumlah gambar naik dari 17 menjadi 25.
+
+### Hasil metode segmentasi (gabungan 32 citra, kanal Lab b)
+| Metode | Dice | IoU | Precision | Recall |
+|---|---|---|---|---|
+| M2 Otsu satu ambang | **0.7948** | **0.6802** | 0.8358 | 0.7533 |
+| M5 k-means | 0.7323 | 0.6073 | 0.9780 | 0.6158 |
+| M3 Otsu multilevel 3 | 0.7029 | 0.5737 | 0.9828 | 0.5822 |
+| M1 pixel if-else (115) | 0.4820 | 0.3725 | 0.5163 | 0.6270 |
+| M4 adaptive threshold | 0.3660 | 0.2288 | 0.7833 | 0.2442 |
+
+Dice Otsu satu ambang per stadium: ring 0.805, trophozoite 0.686, schizont 0.827, gametocyte 0.861.
+
+### Kesimpulan
+- Ambang otomatis mengalahkan ambang tetap. Ambang tetap terbaik hasil sapuan 95-140 adalah 115 (Dice 0.482), jadi keunggulan Otsu bukan karena konstanta yang buruk.
+- Otsu multilevel 3 dan k-means sangat presisi (0.98) tetapi recall rendah (0.58 / 0.62): parasit tipis ikut terpotong. Otsu satu ambang lebih seimbang.
+- Adaptive threshold terburuk di semua stadium: yang tersisa hanya tepi tekstur, badan parasit hilang (recall 0.24).
+- Urutan metode sama di keempat stadium, jadi kesimpulan ini tidak bergantung pada satu stadium saja.
+
+### Catatan / langkah berikutnya
+- Evaluasi preprocessing (Bagian 6) masih memakai Otsu multilevel 3. Karena Otsu satu ambang lebih tinggi, peringkat varian preprocessing perlu dicek ulang dengan Otsu tunggal sebelum diklaim final.
+- File hasil baru: `results/data_preprocessing/dice_metode_per_stadium.csv` dan `summary_metode.csv`.
+
+## 2026-11-16 (ketiga): Label gambar lebih rinci, em dash dibersihkan, bahasa dirapikan
+
+### Perubahan
+1. **Label crop per stadium** kini tiga baris: nama file, luas parasit dalam ribu piksel, dan nama citra sumber. Baris atas tetap 4 crop P. falciparum, baris bawah 4 crop P. vivax.
+2. **Grid gabungan 32 crop**: judul tiap panel memuat nama file dan luas parasit, label spesies dipindah ke atas blok kolom, label stadium ke sisi kiri, jadi tidak lagi menimpa gambar.
+3. **Histogram per stadium**: legenda dipindah ke bawah panel, dua kolom, berisi nama file tiap crop plus nilai rata-rata dan median, sehingga tidak menutupi kurva.
+4. **Demo preprocessing**: judul tiap panel memakai nama tahap yang jelas (koreksi background, median 5x5, CLAHE, Reinhard) dan suptitle memuat nama file, spesies, stadium, luas parasit, serta citra sumber.
+5. **Visual metode segmentasi**: tiap panel memuat nama metode dan parameternya plus Dice dan IoU, sedangkan panel pertama memuat nama file, stadium, dan luas parasit.
+6. **Boxplot metode**: label sumbu-x dibungkus dua baris supaya tidak terpotong.
+7. **Histogram per spesies dan stadium**: ditambah legenda varian preprocessing yang sebelumnya tidak ada.
+8. Semua em dash dan en dash dihapus dari teks notebook maupun judul gambar. Isi PROGRESS.md juga dibersihkan.
+9. Bahasa markdown ditulis ulang supaya lebih wajar, tanpa mengubah angka atau kesimpulan.
+
+### Catatan
+- Angka tidak berubah: Lab b Dice 0.7029 (gabungan 32), per stadium 0.7156 / 0.5591 / 0.7279 / 0.8091, metode segmentasi Otsu 0.7948 sampai adaptive 0.3660.
+- Jumlah gambar tetap 25.
