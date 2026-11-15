@@ -57,3 +57,50 @@ Tanggal: 2026-11-15
 ### Kesimpulan
 - Data 40 crop didominasi parasit besar (luas 12-23 ribu px); ring falciparum dan vivax punya profil grayscale berbeda.
 - Urutan kerja "data dulu, lalu preprocessing" sesuai alur presentasi; notebook ini bisa jadi materi presentasi utama.
+
+## 2026-11-15 (ketiga): Dataset crop dikurangi jadi 32
+
+### Yang dikerjakan
+1. Regenerasi crop: 4 citra per stadium per spesies (4 stadium x 2 spesies) = 32 file di `malaria_images/`; 40 file lama dipindah ke `malaria_images/_backup_40/`.
+2. `malaria_images/metadata.csv` ditulis ulang jadi 32 baris.
+3. Grid di `malaria_data_preprocessing.ipynb` diubah dari 5 kolom jadi 4 (dinamis), dan kedua notebook (`malaria_data_preprocessing.ipynb`, `malaria_parasite_preprocessing.ipynb`) dieksekusi ulang supaya semua output konsisten dengan 32 crop.
+
+### Hasil baru (32 crop)
+| Pipeline | Dice | IoU |
+|---|---|---|
+| P0 Lab b | 0.7029 | 0.5737 |
+| P1 + koreksi background | 0.4376 | 0.2867 |
+| P2 + median | 0.4433 | 0.2923 |
+| P3 + CLAHE | 0.4855 | 0.3299 |
+| P4 + Reinhard | 0.4667 | 0.3133 |
+
+Kesimpulan tidak berubah: Lab b saja terbaik; tahap tambahan menurunkan Dice.
+
+### Catatan
+- Folder `_backup_40` berisi 40 crop versi lama (cadangan, tidak dipakai notebook).
+- Seleksi crop: parasit terbesar per citra sumber, lalu 4 citra terbesar per grup (spesies x stadium), tanpa duplikat sumber.
+
+## 2026-11-15 (keempat): Perbaikan visualisasi statistik
+
+### Masalah
+Boxplot per grup (spesies/stadium) tidak layak karena hanya 4 titik per grup; kotak dan whisker jadi artefak interpolasi, bukan distribusi nyata.
+
+### Perbaikan
+1. Luas parasit per spesies/stadium: diganti dot/strip plot — tiap citra satu titik + garis rata-rata + label nilai (n=16 per spesies, n=8 per stadium).
+2. Dice per pipeline: boxplot dipertahankan (n=32) tetapi ditimpa titik tiap citra, outlier box dimatikan.
+3. Baru: sebaran Dice per citra menurut spesies x stadium (n=4 per grup), ditampilkan sebagai titik + garis rata-rata.
+4. Notebook `malaria_parasite_preprocessing.ipynb` juga diubah: boxplot Dice + titik per citra.
+5. Kedua notebook dieksekusi ulang; angka tetap sama (Lab b Dice 0.7029).
+
+### Kesimpulan
+Visualisasi kini menunjukkan jumlah sampel yang sebenarnya; pembaca bisa melihat setiap citra, bukan hanya ringkasan yang menyamarkan n kecil.
+
+## 2026-11-15 (kelima): Tambah heatmap dan histogram frekuensi
+
+### Yang ditambahkan (notebook `malaria_data_preprocessing.ipynb`)
+1. Heatmap Dice: pipeline x stadium, dan pipeline x spesies (angka di tiap sel).
+2. Histogram frekuensi Dice: gabungan semua citra x pipeline (n=32x5=160) dengan garis median, dan histogram per pipeline.
+3. Notebook dieksekusi ulang; total gambar di notebook 10.
+
+### Kesimpulan
+Heatmap memperlihatkan Lab b konsisten tertinggi di semua stadium dan kedua spesies, sedangkan P1-P4 makin buruk di stadium kecil (ring).
