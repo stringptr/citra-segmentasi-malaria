@@ -104,3 +104,32 @@ Visualisasi kini menunjukkan jumlah sampel yang sebenarnya; pembaca bisa melihat
 
 ### Kesimpulan
 Heatmap memperlihatkan Lab b konsisten tertinggi di semua stadium dan kedua spesies, sedangkan P1-P4 makin buruk di stadium kecil (ring).
+
+## 2026-11-16: Data dibaca per stadium dulu, gabungan 32 di akhir
+
+### Perubahan struktur `malaria_data_preprocessing.ipynb` (28 cells, dieksekusi penuh, 16 gambar)
+1. **Bagian 2 — per stadium, dipisah.** Tiap stadium punya sel sendiri (`plot_stage(...)`): 4 crop *P. falciparum* di baris atas, 4 crop *P. vivax* di baris kedua, lalu histogram intensitas grayscale stadium itu (garis tipis = satu crop, area abu-abu = gabungan 4 crop, garis putus-putus = rata-rata intensitas).
+2. **Bagian 2.5 — ringkasan per stadium:** n, luas parasit, rata-rata dan std intensitas, persen piksel gelap per stadium x spesies (`results/data_preprocessing/ringkasan_per_stadium.csv`).
+3. **Bagian 3 — gabungan 32** seperti sebelumnya: grid 4x8 crop, dot plot luas parasit, histogram gabungan per spesies dan keseluruhan.
+4. **Bagian 5 — evaluasi per stadium:** Dice Otsu multilevel 3 dihitung per stadium (n=8), tabel `dice_per_stadium.csv`, plus histogram Dice per stadium dan histogram per spesies x stadium.
+5. **Bagian 6 — gabungan 32:** tabel ringkasan, boxplot, dot plot per kelompok, heatmap, histogram frekuensi (sama seperti versi sebelumnya).
+6. Jumlah gambar naik dari 10 menjadi 16.
+
+### Hasil Dice per stadium (rata-rata 8 citra)
+| Stadium | P0 Lab b | P1 bg | P2 median | P3 CLAHE | P4 Reinhard |
+|---|---|---|---|---|---|
+| ring | 0.7156 | 0.4478 | 0.4653 | 0.4987 | 0.4724 |
+| trophozoite | 0.5591 | 0.3969 | 0.3917 | 0.4254 | 0.4183 |
+| schizont | 0.7279 | 0.4418 | 0.4508 | 0.4983 | 0.4634 |
+| gametocyte | 0.8091 | 0.4639 | 0.4655 | 0.5195 | 0.5128 |
+
+Gabungan 32 citra tetap: P0 Lab b Dice 0.7029, IoU 0.5737.
+
+### Kesimpulan
+- Lab b tertinggi di keempat stadium; semua tahap tambahan konsisten menurunkan Dice.
+- Dice Lab b paling tinggi di gametocyte (0.809), paling rendah di trophozoite (0.559). Jarak Lab b ke varian berikutnya paling lebar di gametocyte (0.345), paling sempit di trophozoite (0.167).
+- Trophozoite sulit untuk semua varian sekaligus, bukan hanya untuk satu varian.
+
+### Catatan
+- `ringkasan_per_stadium.csv` dan `dice_per_stadium.csv` adalah file hasil baru di `results/data_preprocessing/`.
+- Ketidakkonsistenan label MP-IDB masih terlihat: crop ring falciparum nomor 1 dan 3 berasal dari citra sumber yang juga bertag schizont.
