@@ -186,3 +186,41 @@ Dice Otsu satu ambang per stadium: ring 0.805, trophozoite 0.686, schizont 0.827
 ### Catatan
 - Angka tidak berubah: Lab b Dice 0.7029 (gabungan 32), per stadium 0.7156 / 0.5591 / 0.7279 / 0.8091, metode segmentasi Otsu 0.7948 sampai adaptive 0.3660.
 - Jumlah gambar tetap 25.
+
+## 2026-11-16 (keempat): Dokumen penjelasan notebook
+
+### Yang dibuat
+- `docs/penjelasan_notebook_data_preprocessing.md`: penjelasan lengkap isi notebook dalam bahasa Indonesia, 14 bagian.
+  Isinya: gambaran besar dan cara menjalankan, asal data dan cara mask GT didekode, penjelasan tiap bagian notebook (per stadium, gabungan, preprocessing, lima metode segmentasi, evaluasi), rumus Dice/IoU/precision/recall, tabel semua parameter, daftar file hasil CSV, temuan utama, keterbatasan, skrip reproduksi mandiri, dan daftar istilah.
+- Skrip reproduksi di dokumen sudah diuji: menghasilkan Dice gabungan 0.7948, sama dengan angka Otsu satu ambang di notebook.
+
+### Catatan
+- Angka di dokumen diambil dari CSV hasil notebook, bukan diketik ulang dari ingatan.
+- Semua em dash dihapus, istilah asing dijelaskan dalam kalimat terpisah.
+
+## 2026-11-16 (kelima): Penanda ground truth di semua gambar dan koreksi arti anotasi
+
+### Permintaan
+Pengguna sulit membedakan sel darah merah, sel darah putih, dan parasit di gambar, jadi minta parasit ditandai sesuai ground truth di semua gambar.
+
+### Temuan penting
+1. **Anotasi MP-IDB adalah sel darah merah terinfeksi, bukan badan parasit.** Bukti: mask stadium ring luasnya 18 sampai 23 ribu piksel dan mengisi sekitar 75 persen kotak pembatasnya, sedangkan parasit ring hanya sepersekian ukuran sel. Jadi seluruh angka Dice dan IoU di notebook ini sebenarnya mengukur segmentasi sel terinfeksi.
+2. **Lima pasang crop duplikat, hanya 27 sel unik dari 32 crop.** Pasangan itu: falciparum ring 1 dengan schizont 1, ring 3 dengan schizont 2, ring 4 dengan schizont 3, trophozoite 2 dengan gametocyte 3, dan vivax ring 1 dengan vivax gametocyte 2. Penyebabnya pemilihan crop mengambil objek terbesar tanpa melihat stadium, padahal nama file sumber memuat dua stadium.
+3. Kolom `parasite_area_px` di `metadata.csv` menyimpan luas sel terinfeksi, bukan luas parasit.
+
+### Yang diubah di notebook
+1. Bagian baru **1.1** berisi penjelasan apa yang sebenarnya dianotasi, tabel ciri visual sel darah merah sehat, sel terinfeksi, sel darah putih, dan parasit, plus figure contoh satu crop per stadium dengan perbesaran 4 kali.
+2. Contoh figure itu sengaja dipilih yang morfologinya jelas: `falciparum_ring_2`, `falciparum_trophozoite_1`, `falciparum_schizont_3`, `falciparum_gametocyte_1`. Crop pertama per stadium tidak dipakai karena ring 1 justru tampak seperti schizont.
+3. Helper baru `gt_overlay` (area hijau transparan 0.15 plus garis hijau) dan `gt_contour` (garis saja). Dipakai di tampilan crop per stadium, grid 32 citra, demo preprocessing, dan visual lima metode segmentasi.
+4. Istilah "luas parasit" diganti "luas sel terinfeksi" di judul gambar dan tabel. Kolom CSV `ringkasan_per_stadium.csv` ikut berubah menjadi `luas_sel_terinfeksi_ribu_px`.
+5. Kesimpulan menambah dua butir: arti penanda dan catatan lima pasang crop duplikat.
+6. Baris prosa yang menyelip di sel import dihapus, karena membuat notebook gagal dieksekusi lewat nbconvert.
+
+### Angka
+Tidak berubah. Lab b gabungan Dice 0.7029, IoU 0.5737. Per stadium 0.7156 / 0.5591 / 0.7279 / 0.8091. Otsu satu ambang 0.7948.
+
+### File yang berubah
+- `malaria_data_preprocessing.ipynb` (44 sel, 26 gambar, tanpa error)
+- `docs/penjelasan_notebook_data_preprocessing.md` (koreksi arti ground truth, bagian 1.1, bagian 2.5, temuan, keterbatasan, glosarium)
+- `results/data_preprocessing/ringkasan_per_stadium.csv` (nama kolom)
+- `PROGRESS.md`
