@@ -113,7 +113,8 @@ Heatmap memperlihatkan Lab b konsisten tertinggi di semua stadium dan kedua spes
 3. **Bagian 3 — gabungan 32** seperti sebelumnya: grid 4x8 crop, dot plot luas parasit, histogram gabungan per spesies dan keseluruhan.
 4. **Bagian 5 — evaluasi per stadium:** Dice Otsu multilevel 3 dihitung per stadium (n=8), tabel `dice_per_stadium.csv`, plus histogram Dice per stadium dan histogram per spesies x stadium.
 5. **Bagian 6 — gabungan 32:** tabel ringkasan, boxplot, dot plot per kelompok, heatmap, histogram frekuensi (sama seperti versi sebelumnya).
-6. Jumlah gambar naik dari 10 menjadi 16.
+6. **Bagian 4 (preprocessing):** demo tahapan tidak lagi 3 contoh; kini keempat stadium dipakai (ring, trophozoite, schizont, gametocyte, satu contoh *P. falciparum* masing-masing), jadi trophozoite ikut tampil walau stadium itu paling sulit disegmentasi.
+7. Jumlah gambar naik dari 10 menjadi 17.
 
 ### Hasil Dice per stadium (rata-rata 8 citra)
 | Stadium | P0 Lab b | P1 bg | P2 median | P3 CLAHE | P4 Reinhard |
