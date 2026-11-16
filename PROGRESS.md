@@ -224,3 +224,52 @@ Tidak berubah. Lab b gabungan Dice 0.7029, IoU 0.5737. Per stadium 0.7156 / 0.55
 - `docs/penjelasan_notebook_data_preprocessing.md` (koreksi arti ground truth, bagian 1.1, bagian 2.5, temuan, keterbatasan, glosarium)
 - `results/data_preprocessing/ringkasan_per_stadium.csv` (nama kolom)
 - `PROGRESS.md`
+
+## 2026-11-16 (keenam): Video MP4 1920x1080 bersuara
+
+### Hasil
+- `video_segmentasi_malaria.mp4`, 1920x1080, 30 fps, H.264 + AAC, durasi 8 menit 1 detik, 16 scene.
+- Disimpan di root folder Project (`/home/archian/Kuliah/Semester5/ADCB/Project/`), bukan di repo, supaya tidak menambah 47 MB ke git.
+
+### Isi video
+1. Judul, 2. masalah yang ingin diselesaikan, 3. inti MP-IDB dan kenapa segmentasi dipilih, 4. data 32 crop, 5. arti anotasi sel terinfeksi, 6. ciri sel darah merah, sel darah putih, dan parasit, 7. kesulitan per stadium, 8. lima varian preprocessing, 9. hasil preprocessing, 10. lima metode segmentasi, 11. hasil metode, 12. Dice per stadium, 13. kenapa tanpa train dan test serta protokol yang lebih jujur, 14. catatan data duplikat, 15. kesimpulan, 16. penutup.
+
+### Cara dibuat
+- Slide 1920x1080 disusun dari data dan citra notebook (bukan tangkapan layar), memakai Carlito.
+- Animasi: kamera zoom dan geser bergantian, elemen masuk bertahap (fade dan naik 16 px), progress bar di bawah.
+- Narasi bahasa Indonesia memakai suara neural `id-ID-GadisNeural`. Tiap kalimat disintesis terpisah dengan rate dan pitch berbeda (rate 0 sampai +5 persen, pitch -2 sampai +4 Hz), jeda antar kalimat 0,26 detik, supaya tidak datar.
+- Skrip di `/tmp/opencode/video/`: `scenes.py` (slide dan elemen), `render.py` (animasi, kamera, encode), `make_audio2.py` (narasi), `build_assets.py` (grafik dan panel citra).
+
+### Catatan
+- Video ini belum diuji dengan penonton; penilaian intonasi dan tempo masih subjektif.
+- Angka di video sama dengan notebook: Lab b 0.7029, per stadium 0.7156 / 0.5591 / 0.7279 / 0.8091, Otsu satu ambang 0.7948.
+
+## 2026-11-16 (ketujuh): Bagian terbaik vs terburuk di notebook
+
+### Permintaan
+Menambahkan perbandingan metode dan preprocessing terbaik dengan yang terburuk, lalu menjelaskan kenapa yang terburuk bisa buruk. Diminta masuk ke notebook dan PROGRESS.
+
+### Yang ditambahkan
+Bagian baru **8. Terbaik dan terburuk: apa bedanya** (Kesimpulan bergeser jadi bagian 9):
+1. Tabel semua lima metode dengan Dice, IoU, precision, recall, rasio luas mask terhadap ground truth, jumlah komponen, dan fraksi piksel dekat batas. Disimpan ke `results/data_preprocessing/perbandingan_metode.csv`.
+2. Figure kasus terburuk adaptive per stadium, satu citra unik tiap stadium, dibandingkan Otsu pada citra yang sama. Judul memuat Dice dan rasio luas.
+3. Grafik tiga penyebab: rasio luas 0.89 lawan 0.31, recall 0.75 lawan 0.25, komponen 14 lawan 45.
+4. Tabel dan contoh visual P0 lawan P1 untuk preprocessing, disimpan ke `perbandingan_preprocessing.csv`.
+
+### Temuan
+- **Adaptive buruk bukan karena mask hanya berupa garis tepi.** Fraksi piksel dekat batas hanya 0.08, sama rendahnya dengan Otsu. Penyebabnya, ambang lokal membandingkan piksel dengan rata rata blok 35 piksel, sehingga di dalam sel yang tebal hanya bagian paling gelap yang lolos. Luas yang tertangkap 31 persen, mask pecah jadi 45 komponen, recall 0.25.
+- **Precision adaptive 0.83 terlihat tinggi tetapi menyesatkan**, karena bintik yang lolos hampir semua berada di dalam sel. Yang gagal adalah cakupan.
+- **Kasus terburuk ekstrem:** `falciparum_trophozoite_2.png` hanya tertangkap 0.07 luas ground truth, Dice 0.127, padahal Otsu 0.789 di citra yang sama.
+- **P1 koreksi background** menurunkan recall 0.58 ke 0.29 dan rasio luas 0.59 ke 0.33, karena closing morfologi menganggap badan sel sebagai latar lalu menguranginya. Contoh `falciparum_gametocyte_2.png`: Dice 0.843 turun ke 0.517, luas 0.73 turun ke 0.36.
+- Angka precision dan recall di bagian ini dirata-ratakan per citra, sedangkan tabel metode di Bagian 7 menjumlahkan piksel. Perbedaan kecil ini dijelaskan di 8.2 supaya tidak bingung.
+
+### Catatan
+- Figure contoh memilih citra dengan sumber berbeda tiap stadium, supaya tidak menampilkan sel duplikat yang sama dua kali.
+- Butir kesimpulan tentang adaptive ikut diperbaiki: bukan 'hanya tepi tekstur', tetapi mask terlalu hemat piksel (luas 0.31, 45 komponen, recall 0.25).
+- Notebook dieksekusi ulang: 53 sel, 29 gambar, tanpa error. Angka lama tidak berubah: Otsu 0.7948, adaptive 0.3660, P0 0.7029, P1 0.4376.
+
+### File yang berubah
+- `malaria_data_preprocessing.ipynb`
+- `results/data_preprocessing/perbandingan_metode.csv` (baru)
+- `results/data_preprocessing/perbandingan_preprocessing.csv` (baru)
+- `PROGRESS.md`
