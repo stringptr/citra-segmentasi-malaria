@@ -273,3 +273,62 @@ Bagian baru **8. Terbaik dan terburuk: apa bedanya** (Kesimpulan bergeser jadi b
 - `results/data_preprocessing/perbandingan_metode.csv` (baru)
 - `results/data_preprocessing/perbandingan_preprocessing.csv` (baru)
 - `PROGRESS.md`
+
+## 2026-11-18 (kedua): Protokol 2 train / 2 test dijalankan di notebook
+
+### Yang diubah
+1. **Bagian baru 4.1** di `malaria_data_preprocessing.ipynb`: pembagian tetap 2 train / 2 test. Tiap grup spesies x stadium berisi empat crop, file `_1` dan `_2` jadi train dan `_3` dan `_4` jadi test, 16 citra per sisi. Nomor dibaca dari nama file, bukan urutan baris metadata. Ada assert yang menghentikan eksekusi kalau ada grup yang namanya bukan berakhiran 1 sampai 4.
+2. **Sel baru** menulis `results/data_preprocessing/split_train_test.csv`: filename, spesies, stadium, citra sumber, split, dan penanda `sel_duplikat`.
+3. **Bagian 5 (lima metode segmentasi) ikut dipisah.** Ambang tetap pixel if-else kini dipilih dari train lewat sapuan 95 sampai 140, bukan dari seluruh 32 citra.
+4. **Bagian 6, 7, dan 8.3 (rantai preprocessing) diubah**: tiap tabel dan figure memuat train dan test terpisah, bukan angka gabungan 32 citra. Aturan pemilihan: varian terbaik dipilih hanya dari train, angka test dilaporkan apa adanya.
+5. **Bagian 8.1 dan 8.2 sengaja dibiarkan memakai gabungan 32 citra**, karena bagian itu diagnosis kenapa adaptive gagal, bukan klaim performa. Ada catatan protokol di teksnya.
+6. **Sel baru** menulis `results/data_preprocessing/per_image_dice_test.csv`: Dice tiap citra test untuk lima varian dan lima metode, plus selisih berpasangan terhadap P0.
+7. Notebook kini 56 sel dan 29 gambar, dijalankan penuh tanpa error.
+
+### Hasil train dan test
+
+Preprocessing, segmentasi Otsu multilevel 3, Dice train / test / gabungan 32:
+
+| Varian | Train | Test | Gabungan 32 |
+|---|---|---|---|
+| P0_Lab_b | 0.6832 | 0.7226 | 0.7029 |
+| P1_bg_correct | 0.4102 | 0.4650 | 0.4376 |
+| P2_median | 0.4091 | 0.4775 | 0.4433 |
+| P3_clahe | 0.4584 | 0.5126 | 0.4855 |
+| P4_reinhard | 0.4368 | 0.4967 | 0.4667 |
+
+Metode segmentasi pada kanal Lab b, Dice train / test:
+
+| Metode | Train | Test |
+|---|---|---|
+| Otsu satu ambang | 0.7518 | 0.8379 |
+| k-means, 3 klaster | 0.6845 | 0.7562 |
+| Otsu multilevel 3 | 0.6832 | 0.7226 |
+| Pixel if-else, ambang 130 | 0.4950 | 0.3864 |
+| Adaptive, blok 35, C 5 | 0.3125 | 0.4194 |
+
+### Temuan
+- Peringkat preprocessing sama di train dan di test: P0 terbaik, lalu P3, P4, P2, P1. Kesimpulan "Lab b saja sudah paling baik" bertahan di kedua sisi.
+- Hanya satu citra test, `falciparum_trophozoite_4.png`, yang membuat P1 sampai P4 mengalahkan P0. Jadi 15 dari 16 citra test tetap menurun, dengan rata-rata selisih sekitar -0.21 sampai -0.26 Dice.
+- **Sapuan ambang di train memilih 130 (train 0.4950), bukan 115.** Tetapi di test ambang 130 hanya 0.3864, sementara 115 mencapai 0.5627. Ambang yang menang di train dengan 16 citra tidak ikut menang di test. Ini contoh konkret pemilihan yang gagal pindah ke test.
+- Pixel if-else ambang 130 punya precision 0.27 dan recall 0.92: ambangnya longgar, mask meluber, jadi Dice-nya rendah meski recall tinggi.
+- Urutan metode sama di train dan test, kecuali di test adaptive (0.4194) menyalip pixel if-else (0.3864). Di train adaptive tetap terburuk.
+- **Jaring pengaman lolos.** Dice gabungan 32 citra tetap sama dengan laporan lama: P0 0.7029, P1 0.4376, P2 0.4433, P3 0.4855, P4 0.4667, Otsu satu ambang 0.7948, Otsu multilevel 3 0.7029, adaptive 0.3660. Artinya train dan test memang 32 citra yang sama, jadi pembagiannya tidak mengubah data.
+
+### Catatan
+- Bug yang ketemu saat menjalankan: sel `dice_iou` dan `_clean` ikut terhapus saat sumber sel metode ditulis ulang, sudah dikembalikan sebelum run final.
+- k-means bergeser sedikit antar versi OpenCV: 0.7214 di CSV lama, 0.7401 pada run dengan OpenCV 4.14 di workspace ini. Semua angka lain identik. Ini perlu disebut sebagai keterbatasan kecil.
+- Dua dari 16 citra test memakai sel yang juga muncul di train: `falciparum_ring_3` dengan `falciparum_schizont_2`, dan `falciparum_trophozoite_2` dengan `falciparum_gametocyte_3`. Keduanya tercatat di `split_train_test.csv` pada kolom `sel_duplikat`.
+- `docs/penjelasan_notebook_data_preprocessing.md` yang disebut di catatan lama tidak ada di repo ini, jadi belum ikut diperbarui.
+
+### File yang berubah
+- `malaria_data_preprocessing.ipynb` (56 sel, 29 gambar)
+- `results/data_preprocessing/split_train_test.csv` (baru)
+- `results/data_preprocessing/per_image_dice_test.csv` (baru)
+- `results/data_preprocessing/summary.csv`
+- `results/data_preprocessing/dice_per_stadium.csv`
+- `results/data_preprocessing/summary_metode.csv`
+- `results/data_preprocessing/dice_metode_per_stadium.csv`
+- `results/data_preprocessing/perbandingan_preprocessing.csv`
+- `results/data_preprocessing/perbandingan_metode.csv`
+- `PROGRESS.md`, `session.md`

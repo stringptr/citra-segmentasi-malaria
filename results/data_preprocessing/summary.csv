@@ -1,6 +1,6 @@
-varian preprocessing,dice,iou
-P0_Lab_b,0.7029,0.5737
-P1_bg_correct,0.4376,0.2867
-P2_median,0.4433,0.2923
-P3_clahe,0.4855,0.3299
-P4_reinhard,0.4667,0.3133
+varian preprocessing,dice_train,dice_test,dice_gabungan_32,iou_train,iou_test
+P0_Lab_b,0.6832,0.7226,0.7029,0.549,0.5983
+P1_bg_correct,0.4102,0.465,0.4376,0.2643,0.3091
+P2_median,0.4091,0.4775,0.4433,0.2639,0.3208
+P3_clahe,0.4584,0.5126,0.4855,0.3075,0.3523
+P4_reinhard,0.4368,0.4967,0.4667,0.2882,0.3385

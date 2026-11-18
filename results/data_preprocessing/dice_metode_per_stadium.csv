@@ -1,5 +1,9 @@
-stadium,jumlah_citra,"Pixel if-else, ambang tetap 115",Otsu satu ambang,Otsu multilevel 3,"Adaptive, blok 35, C 5","k-means, 3 klaster"
-ring,8,0.5339,0.8054,0.7156,0.357,0.749
-trophozoite,8,0.306,0.6864,0.5591,0.3866,0.6026
-schizont,8,0.5237,0.8267,0.7279,0.3919,0.7411
-gametocyte,8,0.5645,0.8609,0.8091,0.3284,0.8365
+stadium,split,jumlah_citra,"Pixel if-else, ambang tetap 130",Otsu satu ambang,Otsu multilevel 3,"Adaptive, blok 35, C 5","k-means, 3 klaster"
+ring,train,4,0.4842,0.7386,0.6351,0.3179,0.6452
+ring,test,4,0.4627,0.8721,0.796,0.3961,0.8151
+trophozoite,train,4,0.4053,0.6013,0.5924,0.291,0.6032
+trophozoite,test,4,0.3995,0.7714,0.5257,0.4821,0.5801
+schizont,train,4,0.6494,0.838,0.7054,0.3489,0.6654
+schizont,test,4,0.2942,0.8154,0.7503,0.4348,0.7603
+gametocyte,train,4,0.4409,0.8292,0.8,0.2921,0.8244
+gametocyte,test,4,0.3892,0.8926,0.8183,0.3647,0.8694
