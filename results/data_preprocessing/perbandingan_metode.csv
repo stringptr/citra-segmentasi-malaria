@@ -1,0 +1,6 @@
+metode,dice,iou,precision,recall,rasio_luas,komponen,dekat_batas
+Otsu satu ambang,0.7948,0.6802,0.9003,0.7484,0.8948,14.4688,0.0684
+"k-means, 3 klaster",0.7214,0.5968,0.9744,0.6049,0.6189,8.4375,0.0585
+Otsu multilevel 3,0.7029,0.5737,0.9805,0.5796,0.5896,7.7188,0.0524
+"Pixel if-else, ambang tetap 115",0.482,0.3725,0.66,0.5799,1.1324,37.0938,0.0548
+"Adaptive, blok 35, C 5",0.366,0.2288,0.8329,0.2452,0.3089,45.2188,0.0818

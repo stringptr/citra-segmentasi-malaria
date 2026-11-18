@@ -1,0 +1,5 @@
+stadium,jumlah_citra,"Pixel if-else, ambang tetap 115",Otsu satu ambang,Otsu multilevel 3,"Adaptive, blok 35, C 5","k-means, 3 klaster"
+ring,8,0.5339,0.8054,0.7156,0.357,0.749
+trophozoite,8,0.306,0.6864,0.5591,0.3866,0.6026
+schizont,8,0.5237,0.8267,0.7279,0.3919,0.7411
+gametocyte,8,0.5645,0.8609,0.8091,0.3284,0.8365

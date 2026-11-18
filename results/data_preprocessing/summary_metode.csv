@@ -1,0 +1,6 @@
+metode segmentasi,dice,iou,precision,recall
+"Pixel if-else, ambang tetap 115",0.482,0.3725,0.5163,0.627
+Otsu satu ambang,0.7948,0.6802,0.8358,0.7533
+Otsu multilevel 3,0.7029,0.5737,0.9828,0.5822
+"Adaptive, blok 35, C 5",0.366,0.2288,0.7833,0.2442
+"k-means, 3 klaster",0.7323,0.6073,0.978,0.6158
