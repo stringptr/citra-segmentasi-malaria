@@ -1,0 +1,15 @@
+varian,kelompok,otsu3_32,otsu1_32,otsu1_test,peringkat_otsu3,peringkat_otsu1
+B1_gray_mean,baseline,0.6114,0.5568,0.5521,5,14
+B2_gray_cv2,baseline,0.6547,0.561,0.5555,4,13
+S1_bg_correct,tunggal,0.4376,0.5835,0.6279,13,9
+S2_median,tunggal,0.6988,0.8013,0.8428,3,2
+S3_clahe,tunggal,0.583,0.6058,0.6189,6,7
+S4_reinhard,tunggal,0.7074,0.8069,0.8523,1,1
+P0_Lab_b,rantai,0.7029,0.7948,0.8379,2,3
+P1_bg_correct,rantai,0.4376,0.5835,0.6279,13,9
+P2_median,rantai,0.4433,0.58,0.6271,11,11
+P3_clahe,rantai,0.4855,0.6125,0.6514,9,4
+L_full_P3,leave_one_out,0.4855,0.6125,0.6514,9,4
+L_tanpa_bg,leave_one_out,0.5795,0.6112,0.6335,7,6
+L_tanpa_median,leave_one_out,0.4914,0.5971,0.6316,8,8
+L_tanpa_clahe,leave_one_out,0.4433,0.58,0.6271,11,11

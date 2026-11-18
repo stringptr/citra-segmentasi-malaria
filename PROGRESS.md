@@ -332,3 +332,55 @@ Metode segmentasi pada kanal Lab b, Dice train / test:
 - `results/data_preprocessing/perbandingan_preprocessing.csv`
 - `results/data_preprocessing/perbandingan_metode.csv`
 - `PROGRESS.md`, `session.md`
+
+## 2026-11-18 (ketiga): Bagian 6 perbandingan menyeluruh
+
+Bagian ini menjawab tiga hal yang tidak bisa dijawab rantai P0 sampai P4: apakah Lab b lebih baik daripada grayscale, apakah tiap langkah masih berguna kalau berdiri sendiri, dan apakah tiap langkah berguna ketika langkah lain tetap ada. Posisinya sebelum evaluasi rantai per stadium, sesuai permintaan.
+
+### Yang diubah
+1. **Bagian 6 baru** di `malaria_data_preprocessing.ipynb`, tujuh sel: pengantar dan daftar varian, sel perhitungan 14 varian, tabel hasil, tabel pembanding Otsu satu ambang, dan sel penyimpan CSV.
+2. **Penomoran bagian lama digeser**: evaluasi preprocessing per stadium 6 menjadi 7, gabungan 32 citra 7 menjadi 8, terbaik dan terburuk 8 menjadi 9, kesimpulan 9 menjadi 10. Semua rujukan "Bagian N" di teks ikut diperbaiki.
+3. **Empat belas varian** dihitung dengan segmentasi yang sama: 2 baseline grayscale, 4 varian tunggal di atas Lab b, 4 rantai kumulatif P0 sampai P3, dan 4 leave one out dari rantai penuh P3.
+4. **Selisih berpasangan dan uji Wilcoxon** ditambahkan per citra, bukan hanya rata-rata kelompok.
+5. **Kesimpulan (Bagian 10)** ditambah empat butir: perbandingan grayscale, varian tunggal, leave one out, dan ketergantungan pada metode segmentasi.
+6. Kedua baseline grayscale dihitung: rata-rata RGB (dipakai sebagai baseline utama) dan berbobot `cv2` (pembanding, karena itu yang dipakai histogram Bagian 2).
+
+### Hasil, Otsu multilevel 3
+
+| Varian | Train | Test | 32 citra | Selisih vs pembanding | p |
+|---|---|---|---|---|---|
+| B1 grayscale rata-rata RGB | 0.5612 | 0.6616 | 0.6114 | -0.0915 vs P0 | 0.008 |
+| B2 grayscale berbobot cv2 | 0.5980 | 0.7114 | 0.6547 | -0.0482 vs P0 | 0.100 |
+| S1 koreksi background saja | 0.4102 | 0.4650 | 0.4376 | -0.2653 vs P0 | < 0.001 |
+| S2 median saja | 0.6922 | 0.7055 | 0.6988 | -0.0041 vs P0 | 0.070 |
+| S3 CLAHE saja | 0.5543 | 0.6116 | 0.5830 | -0.1199 vs P0 | < 0.001 |
+| S4 Reinhard saja | 0.6770 | 0.7378 | 0.7074 | +0.0045 vs P0 | 0.904 |
+| P0 kanal Lab b | 0.6832 | 0.7226 | 0.7029 | acuan | - |
+| P3 rantai penuh | 0.4584 | 0.5126 | 0.4855 | -0.2174 vs P0 | < 0.001 |
+| L tanpa koreksi background | 0.5443 | 0.6146 | 0.5795 | +0.0940 vs P3 | < 0.001 |
+| L tanpa median | 0.4641 | 0.5188 | 0.4914 | +0.0060 vs P3 | 0.489 |
+| L tanpa CLAHE | 0.4091 | 0.4775 | 0.4433 | -0.0421 vs P3 | < 0.001 |
+
+### Temuan
+- **Lab b lebih baik daripada grayscale, tetapi jaraknya bergantung rumus.** Selisih +0.0915 terhadap rata-rata RGB dengan p 0.0079. Terhadap grayscale berbobot `cv2` hanya +0.0482 dan tidak signifikan (p 0.0998).
+- **Koreksi background merugikan karena langkahnya sendiri**, bukan karena urutannya. Berdiri sendiri di atas Lab b hasilnya 0.4376, identik dengan P1. Ini bukti paling bersih untuk klaim itu.
+- **Median dan Reinhard netral kalau berdiri sendiri.** Median 0.6988 (p 0.070), Reinhard 0.7074 (p 0.904) terhadap P0. Keduanya baru turun ketika ditempel setelah koreksi background.
+- **CLAHE berguna di dalam rantai, merugikan kalau sendirian.** Sendiri 0.583, tetapi membuangnya dari rantai penuh menurunkan Dice ke 0.4433 (p < 0.001). Efek yang bergantung konteks.
+- **Membuang koreksi background paling menolong**, +0.0940 dengan p 0.0004. Membuang median hampir tidak berpengaruh (p 0.489).
+- **Peringkat bergantung metode segmentasi.** Dengan Otsu satu ambang, 10 dari 14 varian berubah peringkat, dan median sendiri (0.8013) serta Reinhard sendiri (0.8069) mengalahkan P0 (0.7948). Klaim "Lab b saja sudah paling baik" hanya berlaku untuk Otsu multilevel 3.
+- **Pemeriksaan konsistensi lolos.** `S1_bg_correct` sama dengan `P1_bg_correct`, dan `L_tanpa_clahe` sama dengan `P2_median`, karena pipeline-nya memang identik. Angka gabungan 32 citra P0 sampai P4 juga tidak berubah dari laporan sebelumnya.
+
+### Catatan
+- Notebook dijalankan penuh tanpa error dengan kernel `.venv` repo (numpy 2.5.5, OpenCV 5.1.0, scipy 1.18.1). Seluruh CSV lama yang sudah di-commit tidak berubah satu angka pun setelah run ini, termasuk k-means, jadi hasilnya reprodusibel di versi OpenCV ini.
+- Bagian `PROGRESS.md` sesi 18.17 sampai 19.21 sempat hilang saat pull mengambil versi Satria. Salinannya ada di `/tmp/opencode/PROGRESS-lokal.md`, belum digabungkan ke sini.
+- `docs/penjelasan_notebook_data_preprocessing.md` diperbarui: bagian baru bernomor 7, nomor bagian sesudahnya digeser, tabel file hasil, temuan utama, dan keterbatasan ikut disesuaikan.
+
+### File yang berubah
+- `malaria_data_preprocessing.ipynb` (65 sel, dijalankan penuh)
+- `results/data_preprocessing/perbandingan_menyeluruh.csv` (baru)
+- `results/data_preprocessing/perbandingan_menyeluruh_otsu1.csv` (baru)
+- `results/data_preprocessing/per_image_semua_varian.csv` (baru)
+- `docs/penjelasan_notebook_data_preprocessing.md`
+- `PROGRESS.md`
+
+Tambahan kecil sesudahnya: di 6.1 dan di dokumen penjelasan ditambahkan tabel padanan "P0 sendiri sampai P4 sendiri" terhadap varian tunggal (S1 sampai S4), supaya jelas bahwa tiap langkah sudah dinilai tanpa langkah sebelumnya. Hanya teks markdown yang berubah, notebook tidak dijalankan ulang dan angkanya tidak bergeser.
