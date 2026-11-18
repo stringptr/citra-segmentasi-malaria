@@ -384,3 +384,33 @@ Bagian ini menjawab tiga hal yang tidak bisa dijawab rantai P0 sampai P4: apakah
 - `PROGRESS.md`
 
 Tambahan kecil sesudahnya: di 6.1 dan di dokumen penjelasan ditambahkan tabel padanan "P0 sendiri sampai P4 sendiri" terhadap varian tunggal (S1 sampai S4), supaya jelas bahwa tiap langkah sudah dinilai tanpa langkah sebelumnya. Hanya teks markdown yang berubah, notebook tidak dijalankan ulang dan angkanya tidak bergeser.
+
+## 2026-11-18 (keempat): Bagian 7 baseline dan varian tunggal
+
+Baseline grayscale dan empat varian tunggal dipisah dari Bagian 6, karena dua kelompok itu menjawab pertanyaan yang berbeda dari rantai. Bagian 6 sekarang hanya berisi rantai P0 sampai P3 dan leave one out. Semua bagian sesudahnya digeser satu nomor: per stadium jadi 8, gabungan 32 citra jadi 9, terbaik dan terburuk jadi 10, kesimpulan jadi 11.
+
+### Yang diubah
+1. **Bagian 6 dipangkas**: judul jadi "Rantai preprocessing dan leave one out", tabel pengantar tinggal dua baris, tabel hasil dan plot titik hanya menampilkan varian rantai dan leave one out. Sel perhitungan tetap menghitung 14 varian karena Bagian 7 memakainya, dan CSV gabungan tetap lengkap.
+2. **Bagian 7 baru, delapan sel**: pengantar, tabel keseluruhan, tabel per stadium train dan test, figure per stadium, figure per spesies dan stadium, heatmap, tabel Otsu satu ambang, dan figure contoh kanal dasar yang dipindah dari Bagian 6.
+3. **Heatmap** varian kali stadium dan varian kali spesies, train dan test, gayanya sama dengan heatmap di Bagian 10.
+4. **Rujukan nomor dirapikan**: 8.2 yang basi jadi 10.2, tabel 8.1 jadi 10.1, Bagian 8 jadi 9, Bagian 9.3 jadi 10.3 di teks Bagian 10, serta rujukan di kesimpulan.
+5. Notebook kini **73 sel dan 34 gambar**, dijalankan penuh tanpa error.
+
+### Hasil
+
+Angka tidak bergeser dari laporan sebelumnya. Baseline Otsu multilevel 3: B1 grayscale rata-rata RGB 0.6114, B2 grayscale `cv2` 0.6547, P0 0.7029. Varian tunggal: S1 0.4376, S2 0.6988, S3 0.5830, S4 0.7074.
+
+### Temuan
+- Dengan Otsu satu ambang, **6 dari 7 varian di Bagian 7 berubah peringkat**. Hanya Reinhard sendiri yang tetap paling tinggi (0.8069). Baseline grayscale jatuh paling dalam, B1 dari 0.6114 ke 0.5568 dan B2 ke 0.5610, jadi keunggulan Lab b justru melebar di metode itu.
+- Di semua stadium dan kedua sisi, B1 selalu di bawah P0. Selisih terbesar ada di stadium ring test, 0.7086 lawan 0.7960.
+- `S1_bg_correct` dan `P1_bg_correct` tetap identik, sama seperti `L_tanpa_clahe` dan `P2_median`, jadi pemeriksaan konsistensi masih lolos.
+
+### Catatan
+- Verifikasi dijalankan lewat venv sementara `/tmp/opencode/vtest` (numpy 2.5.5, OpenCV 4.14.0). Angka k-means tetap 0.7401 seperti run sebelumnya di versi OpenCV ini.
+- Dua CSV baru hanya ringkasan untuk Bagian 7. `perbandingan_menyeluruh.csv` dan `per_image_semua_varian.csv` tidak dipecah supaya tetap satu sumber untuk kedua bagian.
+
+### File yang berubah
+- `malaria_data_preprocessing.ipynb` (73 sel, 34 gambar)
+- `results/data_preprocessing/perbandingan_baseline_tunggal.csv` (baru)
+- `results/data_preprocessing/dice_baseline_tunggal_per_stadium.csv` (baru)
+- `PROGRESS.md`, `session.md`
