@@ -1,0 +1,13 @@
+target,model,validasi,akurasi,f1_macro,baseline
+spesies,LogReg,LOO,0.9375,0.9373,0.5
+spesies,LogReg,GroupKFold,0.9375,0.9373,0.5
+spesies,LogReg,LOGO,0.9375,0.9373,0.5
+spesies,RF,LOO,0.9688,0.9687,0.5
+spesies,RF,GroupKFold,0.9375,0.9373,0.5
+spesies,RF,LOGO,0.9688,0.9687,0.5
+stadium,LogReg,LOO,0.25,0.2571,0.25
+stadium,LogReg,GroupKFold,0.4375,0.4404,0.25
+stadium,LogReg,LOGO,0.375,0.3824,0.25
+stadium,RF,LOO,0.25,0.2495,0.25
+stadium,RF,GroupKFold,0.5,0.4887,0.25
+stadium,RF,LOGO,0.4062,0.3946,0.25

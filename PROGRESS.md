@@ -414,3 +414,113 @@ Angka tidak bergeser dari laporan sebelumnya. Baseline Otsu multilevel 3: B1 gra
 - `results/data_preprocessing/perbandingan_baseline_tunggal.csv` (baru)
 - `results/data_preprocessing/dice_baseline_tunggal_per_stadium.csv` (baru)
 - `PROGRESS.md`, `session.md`
+
+## 2026-11-19: Deck presentasi 16 slide
+
+Dibuat dari notebook terbaru setelah commit Satria `8bf5e09`, jadi penomoran mengikuti 11 bagian dan angka baseline serta varian tunggal diambil dari `perbandingan_baseline_tunggal.csv`.
+
+### Isi deck `docs/presentation-final.pptx`
+1. Judul, masalah (anotasi sel bukan parasit), data 32 crop dengan montase semuanya.
+2. Metode: rantai P0 sampai P4, lima metode segmentasi dengan contoh mask, protokol 2 train 2 test.
+3. Hasil: tabel rantai, leave one out, baseline grayscale, varian tunggal dengan heatmap, ketergantungan pada metode segmentasi, tabel lima metode, Dice per stadium.
+4. Temuan, batasan, kesimpulan.
+5. Catatan pembicara di tiap slide menyebut file CSV sumber angkanya.
+
+### Verifikasi
+- Semua angka diambil dari CSV, tidak ada yang diketik dari prosa.
+- OOXML lolos `validate.py` dari skill pptx.
+- Pemeriksaan geometri sendiri: tidak ada bentuk keluar slide, tidak ada kotak teks meluap, tidak ada tumpang tindih.
+- Render visual memakai renderer sendiri dari geometri PPTX, karena LibreOffice tidak terpasang di mesin ini. Jadi tampilan di PowerPoint bisa sedikit berbeda pada pembulatan teks.
+
+### Catatan
+- File `docs/presentation-final.pptx` belum di-commit.
+- Gambar diambil dari output tersimpan notebook (110 dpi), bukan diekspor ulang. Pada slide dengan figure lebar, teks di dalam gambar kecil dan sebaiknya dibaca dari CSV atau dari notebook.
+
+### Tema disesuaikan dengan UI portfolio
+- Deck baru `docs/presentation-final-green.pptx`, 16 slide, tema neobrutalis seperti web portfolio: latar putih bertitik, border tinta 2px, bayangan keras 6px, label mono huruf besar berspasi, judul Space Grotesk.
+- Aksen merah `#e10600` diganti hijau `#0b7f3b`, tint `#e7f5ec`. Slide judul dan penutup memakai latar tinta `#111827`.
+- Palet dan gaya diambil dari `src/index.css` di proyek portfolio (kelas `card`, `label`, `chip`).
+- Font Space Grotesk dan JetBrains Mono sudah terpasang di sistem, jadi tidak perlu menyematkan font.
+- `docs/presentation-final.pptx` (tema lama) tetap ada sebagai pembanding.
+
+### Revisi tema: putih penuh, diagram alur, gambar besar
+- Semua slide kini berlatar putih bergrid titik, termasuk judul dan penutup. Tidak ada slide gelap.
+- Slide 2 baru berisi diagram alur enam tahap. Mermaid CLI tidak terpasang di mesin ini, jadi diagram digambar sebagai bentuk native PowerPoint agar tajam dan muat satu slide; sumber Mermaid-nya disimpan di `docs/progress.mmd` dan sudah dirender lewat kroki untuk memastikan alurnya terbaca.
+- Gambar yang sebelumnya berbagi slide dengan tabel dipindah ke slide sendiri dengan lebar sampai 12,1 inci. Grid mask 4 stadium dipecah jadi dua slide, ring dan trophozoite lalu schizont dan gametocyte.
+- Deck kini 22 slide: judul, diagram, masalah, data, montase, varian, panel varian, metode, dua slide mask, protokol, rantai, leave one out, baseline, kanal, varian tunggal, peringkat, metode hasil, per stadium, temuan, batasan, kesimpulan.
+- Catatan pembicara tetap ada di semua slide dan menyebut CSV sumbernya.
+
+
+## 2026-11-19 (kedua): Deck lengkap, semua figure notebook masuk
+
+Deck baru `docs/presentation-lengkap.pptx`, 50 slide 16:9, tema putih aksen hijau yang sama. Deck 22 slide sebelumnya tetap ada sebagai versi pendek.
+
+### Isi
+- 34 figure notebook dipetakan ke 35 slide (`cell5`, `cell9` sampai `cell68`, termasuk histogram per stadium dan histogram frekuensi Dice). Satu figure mask 4 stadium dipecah dua slide.
+- Bagian 6 dan 7 notebook kini lengkap: tabel rantai P0 sampai P4, grafik leave one out, tabel leave one out dengan nilai p, tabel baseline grayscale, bar tujuh varian per stadium, grafik tiga kanal per spesies dan stadium, heatmap empat panel, dan contoh visual kanal.
+- Tiap slide figure memakai satu visual besar dengan dua sampai empat butir penjelasan. Slide 3 memuat peta slide per bagian.
+- Catatan pembicara tiap slide menyebut file CSV sumber.
+
+### Angka baru yang muncul saat pemeriksaan
+- Median sendiri mengungguli P0 di 4 dari 8 kelompok spesies x stadium (`dice_baseline_tunggal_per_stadium.csv`), meski gabungan 32 citra P0 unggul tipis 0,7029 lawan 0,6988.
+- Di trophozoite test, grayscale cv2 0,6756 mengalahkan P0 0,5257.
+- P0 di atas 0,8 pada 7 dari 16 citra di train dan 7 di test (`per_image_semua_varian.csv`).
+- Karena temuan itu, butir 3 slide Temuan diberi catatan bahwa "median netral" hanya berlaku untuk gabungan 32 citra.
+
+### Verifikasi
+- `validate.py` skill pptx lolos.
+- Pemeriksaan geometri sendiri: tidak ada bentuk keluar slide, teks meluap, atau tumpang tindih.
+- Pratinjau dirender dari geometri PPTX karena LibreOffice tidak terpasang. Pembungkusan teks di PowerPoint bisa sedikit berbeda.
+
+### Catatan
+- 50 slide terlalu panjang untuk 15 menit. Untuk presentasi, slide per stadium (8 sampai 15, 19 sampai 22) bisa dijadikan lampiran.
+- Belum ada ekstraksi fitur di notebook saat itu. Bagian 11 hanya segmentasi dan metrik. Fitur bentuk atau tekstur untuk klasifikasi belum dikerjakan (dikerjakan 2026-11-24).
+- File belum di-commit.
+
+## 2026-11-24: Bagian 11 area putih dan Bagian 12 ekstraksi fitur + klasifikasi
+
+### Git
+- `git pull --ff-only` di branch `feat/ian`: `Already up to date`. Tidak ada commit baru di remote.
+- `feat/ian` sudah 14 commit di depan `origin/main`, dan `origin/main` tidak punya commit yang belum ada di branch ini. Tidak ada merge.
+- Perubahan lokal dari sesi sebelumnya tetap utuh: `PROGRESS.md`, notebook, 32 PNG, dan dua CSV di `results/preprocessing_stages`.
+
+### Bagian 11: penanganan area putih
+- Kriteria area kosong: `L >= 240` di Lab dan warna hampir netral, `|a-128| <= 10` serta `|b-128| <= 10`.
+- Delapan crop terkena, semuanya P. vivax. Terluas `vivax_schizont_2` 50,0 persen luas crop, lalu `vivax_trophozoite_3` 38,8 persen.
+- Pengisian memakai `cv2.inpaint` metode Telea radius 5. Hanya `vivax_schizont_1` yang 11,4 persen area putihnya menimpa sel, sisanya di bawah 0,2 persen.
+- Dice P0 gabungan 32 citra 0,7029 menjadi 0,7004. Pada delapan citra itu 0,4965 menjadi 0,4866. Empat citra tidak berubah, empat turun 0,02 sampai 0,03.
+- Kesimpulan: pengisian bukan cara menaikkan Dice, karena area putih hampir seluruhnya di latar. Bagian 5 sampai 10 tetap memakai citra asli, hanya Bagian 12 yang memakai citra terisi.
+- File baru: `results/data_preprocessing/area_putih.csv` dan `area_putih_dice.csv`.
+
+### Bagian 12: ekstraksi fitur dan klasifikasi
+- 24 fitur per crop, diukur dari mask ground truth: 7 bentuk, 10 warna termasuk kontras terhadap cincin latar, 7 tekstur (GLCM, Laplacian, entropi).
+- Akurasi cross validation, baseline 0,500 untuk spesies dan 0,250 untuk stadium:
+
+| Target | Model | LOO | GroupKFold | LOGO |
+|---|---|---|---|---|
+| Spesies | LogReg | 0,938 | 0,938 | 0,938 |
+| Spesies | RF | 0,969 | 0,938 | 0,969 |
+| Stadium | LogReg | 0,250 | 0,438 | 0,375 |
+| Stadium | RF | 0,250 | 0,500 | 0,406 |
+
+- Spesies mudah, stadium sulit. Rentang stadium 0,250 sampai 0,500 dengan baseline 0,250. LOGO dipakai sebagai rujukan karena 32 crop hanya mewakili 27 sel.
+- Fitur bentuk saja memberi 0,719 untuk spesies, sedangkan warna dan tekstur saja 0,938. Dua fitur teratas `a_rata` dan `b_rata`, jadi keunggulan spesies sebagian besar ciri batch pewarnaan, bukan morfologi.
+- Stadium per spesies: P. falciparum 0,562, P. vivax 0,250. Dengan 16 citra per spesies angka itu belum layak dipercaya.
+- Confusion matrix stadium: schizont 6 dari 8 ditebak ring, karena mask yang dipakai adalah sel terinfeksi, bukan parasit.
+- File baru: `fitur_per_crop.csv`, `klasifikasi_fitur.csv`, dan `klasifikasi_kelompok_fitur.csv`.
+
+### Perubahan kode
+- Notebook 73 sel menjadi 85 sel, dijalankan penuh tanpa error dalam 73,7 detik.
+- Kesimpulan bergeser dari Bagian 11 ke Bagian 13. Daftar isi di sel 0 ditambah dua butir, dan kesimpulan dapat satu butir baru.
+- `requirement.txt` ditambah `scikit-learn`, karena notebook sekarang memakainya dan sebelumnya belum terpasang.
+- Satu perbaikan pada sel ringkasan fitur: `groupby(...).reindex(...)` diganti `groupby(...)[FEATURES].mean().reindex(...)`, karena `reindex` tidak ada pada objek GroupBy.
+
+### Verifikasi
+- Eksekusi penuh tanpa error. Empat gambar baru dirender dan diperiksa manual: panel sebelum dan sesudah inpainting, scatter PCA bersama heatmap fitur, dua confusion matrix, dan kepentingan fitur.
+- Angka lama tidak bergeser: `summary.csv` P0 tetap 0,7029, dan CSV lama di `results/data_preprocessing` tidak berubah.
+- Angka markdown dicocokkan dengan keluaran sel: 0,4965 ke 0,4866, serta 0,562 dan 0,250 untuk stadium per spesies.
+
+### Catatan
+- Semua angka klasifikasi adalah batas atas, karena fitur diambil dari mask ground truth, bukan mask prediksi.
+- Bukti area putih dihitung ulang setiap kali notebook dijalankan, tidak disimpan sebagai gambar terpisah.
+- File belum di-commit.
