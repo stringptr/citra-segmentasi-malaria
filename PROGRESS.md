@@ -523,4 +523,5 @@ Deck baru `docs/presentation-lengkap.pptx`, 50 slide 16:9, tema putih aksen hija
 ### Catatan
 - Semua angka klasifikasi adalah batas atas, karena fitur diambil dari mask ground truth, bukan mask prediksi.
 - Bukti area putih dihitung ulang setiap kali notebook dijalankan, tidak disimpan sebagai gambar terpisah.
-- File belum di-commit.
+- Sudah di-commit sebagai `99c25cf` dan di-push ke `origin/feat/ian`.
+- Perubahan lama yang tidak ikut di-commit: 32 PNG yang pikselnya identik dengan HEAD hanya beda kompresi, dua CSV di `results/preprocessing_stages`, dan berkas deck di `docs/`.
